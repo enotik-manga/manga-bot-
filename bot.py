@@ -21,8 +21,8 @@ def keep_alive():
     t.start()
 # ----------------------------
 
-# ТОКЕН ВПИСАН СЮДА
-TOKEN = '8931356815:AAEc1hni9GZ9_21-2L40XWKAxaDem85P5C0'
+# НОВЫЙ РАБОЧИЙ ТОКЕН
+TOKEN = '8931356815:AAF9i-Z07DTm4K5P4bua4WM21CagMu0ZbQQ'
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
