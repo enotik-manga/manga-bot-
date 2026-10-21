@@ -21,7 +21,8 @@ def keep_alive():
     t.start()
 # ----------------------------
 
-TOKEN = os.environ.get('BOT_TOKEN')
+# ВПИСАЛИ ТОКЕН ПРЯМО В КОД
+TOKEN = '8931356815:AAEc1hni9GZ9_21-2L40XWKAxaDem85P5C0'
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
