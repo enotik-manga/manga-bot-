@@ -21,7 +21,7 @@ def keep_alive():
     t.start()
 # ----------------------------
 
-# ВПИСАЛИ ТОКЕН ПРЯМО В КОД
+# ТОКЕН ВПИСАН СЮДА
 TOKEN = '8931356815:AAEc1hni9GZ9_21-2L40XWKAxaDem85P5C0'
 bot = telebot.TeleBot(TOKEN)
 
