@@ -21,35 +21,36 @@ def keep_alive():
     t.start()
 # ----------------------------
 
-# НОВЫЙ РАБОЧИЙ ТОКЕН
+# ТОКЕН
 TOKEN = '8931356815:AAF9i-Z07DTm4K5P4bua4WM21CagMu0ZbQQ'
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, 'Привет, брат! Я Манга-Ками ⛩️. Напиши, что нарисовать, и я создам эпичные картинки в стиле аниме!')
+    bot.send_message(message.chat.id, 'Привет, брат! Я Манга-Ками ⛩️. Напиши, что нарисовать (лучше на английском).')
 
 @bot.message_handler(content_types=['text'])
 def generate_image(message):
     prompt = message.text
-    magic_prompt = f"{prompt}, masterpiece, best quality, highly detailed, dynamic action pose, epic composition, cinematic lighting, vibrant colors, anime key visual, sharp focus"
+    magic_prompt = f"{prompt}, anime style, masterpiece"
     encoded_prompt = urllib.parse.quote(magic_prompt)
     
-    bot.send_message(message.chat.id, 'Рисую экшн! ⏳ Генерирую 2 варианта (квадрат и вертикальный постер), подожди около минуты...')
+    bot.send_message(message.chat.id, 'Рисую... ⏳ Подожди около минуты...')
 
-    sizes = [("1024", "1024", "квадрат"), ("1024", "1536", "вертикальный постер")]
+    seed = random.randint(1, 1000000)
+    # Убрал model=flux-anime, чтобы сервер сам выбрал рабочую модель
+    url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&seed={seed}"
     
-    for i, (w, h, desc) in enumerate(sizes):
-        seed = random.randint(1, 1000000)
-        url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?model=flux-anime&width={w}&height={h}&nologo=true&seed={seed}"
-        
-        try:
-            bot.send_chat_action(message.chat.id, 'upload_photo')
-            response = requests.get(url, timeout=300)
-            response.raise_for_status()
-            bot.send_photo(message.chat.id, response.content, caption=f'Вариант {i+1} ({desc}) готов! 🎨')
-        except Exception as e:
-            bot.send_message(message.chat.id, f'Ошибка на варианте {i+1}: не удалось нарисовать.')
+    try:
+        bot.send_chat_action(message.chat.id, 'upload_photo')
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        # Увеличил таймаут до 180 секунд, так как сервера часто тупят
+        response = requests.get(url, headers=headers, timeout=180)
+        response.raise_for_status()
+        bot.send_photo(message.chat.id, response.content, caption=f'Готово! 🎨')
+    except Exception as e:
+        # ТЕПЕРЬ БОТ ПОКАЖЕТ НАСТОЯЩУЮ ОШИБКУ
+        bot.send_message(message.chat.id, f'Ошибка сервера: {str(e)}')
 
 if __name__ == "__main__":
     keep_alive()
